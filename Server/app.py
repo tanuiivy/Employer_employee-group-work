@@ -3,27 +3,36 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_restful import Api
 
-# Initialize extensions
+# Initialize exten
 db = SQLAlchemy()
 migrate = Migrate()
 
-def create_app():
-    app = Flask(__name__)
+app = Flask(__name__)
 
     # Configure your database (example: SQLite)
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.json.compact = False
 
     # Initialize extensions with app
-    db.init_app(app)
-    migrate.init_app(app, db)
+db.init_app(app)
+migrate.init_app(app, db)
 
     # Set up Flask-RESTful
-    api = Api(app)
+api = Api(app)
 
-    # Register your resources
-    from resources.hello import Hello
-    api.add_resource(Hello, '/')
+class Home(Resource):
+    def get(self):
+        response_dict={
+            "message":"Welcome to Employee record"
+        }
+        response = make_response(
+            response_dict,
+            200,)
+        return response
+api.add_resource(Home, '/')  
+    
+
 
     return app
 
